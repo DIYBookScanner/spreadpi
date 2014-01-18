@@ -52,7 +52,8 @@ bootfs="${rootfs}/boot"
 
 mkdir -p ${BUILD_ENV}
 
-# Create image file, 2GiB in size
+echo "Creating raw image file"
+# Create image file
 image="${SCRIPT_DIR}/spreadpi_v${VERSION}.img"
 dd if=/dev/zero of=${image} bs=1MB count=$IMAGESIZE &>> $LOG
 device=`losetup -f --show ${image}` &>> $LOG
@@ -145,7 +146,7 @@ console-common	console-data/keymap/full	select	us
 # Run user-defined scripts from DELIVERY_DIR/scripts
 echo "Running custom bootstrapping scripts"
 for script in usr/src/delivery/scripts/*; do
-    echo "/$script"
+    echo "/$(basename $script)"
     LANG=C chroot ${rootfs} /$script &>> $LOG
 done
 
@@ -155,6 +156,7 @@ echo "deb ${DEFAULT_DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
 
 
 # Clean up
+echo "Cleaning up bootstrapped system"
 echo "#!/bin/bash
 aptitude update
 aptitude clean
