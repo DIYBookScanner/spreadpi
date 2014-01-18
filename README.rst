@@ -1,4 +1,5 @@
 ::
+
                                 _       _
     ___ _ __  _ __ ___  __ _  __| |_ __ (_)
     / __| '_ \| '__/ _ \/ _` |/ _` | '_ \| |
@@ -32,4 +33,5 @@ Usage
 The build script has to be run as root
 
 ::
-    sudo ./build.sh
+
+    $ sudo ./build.sh
