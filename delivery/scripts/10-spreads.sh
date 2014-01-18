@@ -26,3 +26,10 @@ chmod a+x /etc/init.d/spread
 
 # Add spreads init script to default boot sequence
 update-rc.d spread defaults
+
+# Install nginx configuration
+cp $DELIVERY/files/nginx_default /etc/nginx/sites-enabled/default
+chmod a+x /etc/nginx/sites-enabled/default
+
+# Add nginx init script to default boot sequence
+update-rc.d nginx defaults
