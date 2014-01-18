@@ -4,8 +4,8 @@
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Should-Start:      $nginx
-# Default-Start:     30 2 3 4 5
-# Default-Stop:      70 0 1 6
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
 # Short-Description: spreads debian init script
 # Description:       spreads debian init script
 ### END INIT INFO
@@ -16,19 +16,15 @@
 
 # Do NOT "set -e"
 
-PROJECT=/path/to/project/
-PORT=8888
 LOGDIR=/var/log/spreads/
 PATH=/bin:/usr/bin
-USER=www-data
-GROUP=www-data
-IP=0.0.0.0
-PORT=80
+USER=spreads
 NAME=`basename $0`
 DESC=$NAME
 LOGFILE="$LOGDIR$NAME.log"
-PIDFILE="$PROJECT$NAME.pid"
-CMD="spread web --user=$USER --group=$GROUP --ip=$IP --port=$PORT --pid=$PIDFILE --name=$NAME --log-file=$LOGFILE --log-level=info"
+PIDFILE="/var/run/spread.pid"
+SPREAD='spread web --mode=scanner '
+CMD="su -l -c \"$SPREAD\" $USER &"
 
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
@@ -49,7 +45,7 @@ do_start() {
   if [ -e $PIDFILE ]; then
     return 1
   fi
-  $CMD
+  eval $CMD && echo $! > $PIDFILE
   if [ $? = 0 ]; then
     return 0
   else
@@ -139,3 +135,4 @@ case "$1" in
 esac
 
 :
+
