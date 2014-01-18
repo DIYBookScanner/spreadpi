@@ -12,6 +12,7 @@ rm -rf /tmp/chdkptp.zip
 git clone https://github.com/jbaiter/spreads.git /usr/src/spreads
 cd /usr/src/spreads
 git checkout webplugin
+pip install flask flask-compress zipstream waitress requests
 pip install -e .
 
 # Create spreads configuration directoy

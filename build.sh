@@ -57,10 +57,24 @@ echo "Creating raw image file"
 image="${SCRIPT_DIR}/spreadpi_v${VERSION}.img"
 dd if=/dev/zero of=${image} bs=1MB count=$IMAGESIZE &>> $LOG
 device=`losetup -f --show ${image}` &>> $LOG
-echo "image ${image} created and mounted as ${device}"
+echo "Image ${image} created and mounted as ${device}"
 
 # Setup up /boot and /root partitions
-echo "n\np\n1\n\n+${BOOTSIZE}\nt\nc\np\n2\n\n\nw\n" | fdisk ${device} &>> $LOG
+echo "
+n
+p
+1
+
++${BOOTSIZE}
+t
+c
+n
+p
+2
+
+
+w
+" | fdisk ${device} &>> $LOG
 
 
 # Set up loopback devices
