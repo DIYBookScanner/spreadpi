@@ -3,7 +3,7 @@
 DELIVERY=/usr/src/delivery
 
 # Install spreads dependencies
-apt-get -y install liblua5.1-0 python-yaml python-pip unzip libusb-dev python-netifaces python-pyexiv2
+apt-get -y install liblua5.1-0 libusb-dev nginx python-netifaces python-pip  python-pyexiv2 python-yaml unzip
 wget --continue https://www.assembla.com/spaces/chdkptp/documents/aDDsvQyhOr465JacwqjQYw/download/aDDsvQyhOr465JacwqjQYw -O /tmp/chdkptp.zip
 unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 rm -rf /tmp/chdkptp.zip
