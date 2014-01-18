@@ -1,0 +1,25 @@
+# Valid values: 'none', 'debug', 'info', 'warning', 'error', 'critical'
+loglevel: info
+plugins: [web]
+
+# Options for 'capture' step
+capture:
+    capture_keys: [' ', b]
+device:
+    focus_distance: 545
+    dpi: 300
+    parallel_capture: yes
+    chdkptp_path: /usr/local/lib/chdkptp
+    zoom_level: 3
+    shoot_raw: no
+    sensitivity: 80
+    flip_target_pages: no
+    shutter_speed: 1/25
+web:
+    database: ~/.config/spreads/workflows.db
+    mode: scanner
+    project_dir: ~/scans
+    postprocessing_server: ''
+    debug: no
+driver: a2200
+logfile: ~/.config/spreads/spreads.log
