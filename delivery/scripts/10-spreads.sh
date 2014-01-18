@@ -20,3 +20,16 @@ mkdir -p /home/spreads/.config/spreads
 cp $DELIVERY/files/config.yaml /home/spreads/.config/spreads
 chown -R spreads /home/spreads/.config/spreads
 
+# Install spreads init script
+cp $DELIVERY/files/spread /etc/init.d/spread
+chmod a+x /etc/init.d/spread
+
+# Add spreads init script to default boot sequence
+update-rc.d spread defaults
+
+# Install nginx configuration
+cp $DELIVERY/files/nginx_default /etc/nginx/sites-enabled/default
+chmod a+x /etc/nginx/sites-enabled/default
+
+# Add nginx init script to default boot sequence
+update-rc.d nginx defaults
