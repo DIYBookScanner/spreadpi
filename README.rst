@@ -16,23 +16,33 @@ https://github.com/andrius/build-raspbian-image
 
 Requirements
 ============
-* `binfmt` kernel module loaded
+* `git`
+* `binfmt_misc` kernel module loaded
 * `qemu-arm-static`
 * `deboostrap`
 * `kpartx`
-* `lvm2`
-* `dosfstools`
+* `mkfs.vfat`
+* `mkfs.ext4`
 * raspbain archive key installed
 
 On Debian and derivatives::
 
     wget http://archive.raspbian.org/raspbian.public.key -O - | sudo apt-key add -
 
-
 Usage
 =====
-The build script has to be run as root
+To generate an image, run the `build.sh` script as root:
 
 ::
 
     $ sudo ./build.sh
+
+The image will generate a rasbpian image with up-to-date packages and spreads
+with the currently experimental webinterface pre-installed and pre-configured
+(for use with Canon A2200 cameras running CHDK). Spreads will be automatically
+launched on startup. Make sure that your devices are turned on before the boot
+has finished.
+
+Login accounts:
+    * root:raspberry
+    * spreads:spreads
