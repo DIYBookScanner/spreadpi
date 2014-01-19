@@ -3,8 +3,13 @@
 # you need at least
 # apt-get install binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstools
 
-
-VERSION="0.1"
+# Try to get version string from Git
+VERSION=$(git tag -l --contains HEAD)
+if [ -z "$RELEASE" ]; then
+    # We append a random number, since otherwise our loopback devices will
+    # be broken on multiple runs if we use the same image name each time.
+    VERSION="git@$(git log --pretty=format:'%h' -n 1)_$RANDOM"
+fi
 
 # =================== #
 #    CONFIGURATION    #
@@ -64,12 +69,11 @@ bootfs="${rootfs}/boot"
 
 mkdir -p ${BUILD_ENV}
 
-echo "Creating raw image file"
 # Create image file
 image="${SCRIPT_DIR}/spreadpi_v${VERSION}.img"
+echo "Initializing image file $image"
 dd if=/dev/zero of=${image} bs=1MB count=$IMAGESIZE &>> $LOG
 device=`losetup -f --show ${image}` &>> $LOG
-echo "Image ${image} created and mounted as ${device}"
 
 # Setup up /boot and /root partitions
 echo "
