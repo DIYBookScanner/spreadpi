@@ -22,10 +22,12 @@ Requirements
 * `kpartx`
 * `lvm2`
 * `dosfstools`
+* raspbain archive key installed
 
 On Debian and derivatives::
 
     sudo apt-get install binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstools
+    wget http://archive.raspbian.org/raspbian.public.key -O - | sudo apt-key add -
 
 
 Usage
