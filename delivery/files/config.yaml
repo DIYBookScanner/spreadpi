@@ -1,6 +1,6 @@
 # Valid values: 'none', 'debug', 'info', 'warning', 'error', 'critical'
-loglevel: info
-plugins: [web]
+loglevel: debug
+plugins: [web,hidtrigger]
 
 # Options for 'capture' step
 capture:
