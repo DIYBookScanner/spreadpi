@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# you need at least
-# apt-get install binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstools
-
 # Try to get version string from Git
 VERSION=$(git tag -l --contains HEAD)
 if [ -z "$RELEASE" ]; then
@@ -70,10 +67,10 @@ bootfs="${rootfs}/boot"
 mkdir -p ${BUILD_ENV}
 
 # Create image file
-image="${SCRIPT_DIR}/spreadpi_v${VERSION}.img"
+image="${SCRIPT_DIR}/spreadpi_${VERSION}.img"
 echo "Initializing image file $image"
 dd if=/dev/zero of=${image} bs=1MB count=$IMAGESIZE &>> $LOG
-device=`losetup -f --show ${image}` &>> $LOG
+lodevice=`losetup -f --show ${image}` &>> $LOG
 
 # Setup up /boot and /root partitions
 echo "
@@ -90,11 +87,11 @@ p
 
 
 w
-" | fdisk ${device} &>> $LOG
+" | fdisk ${lodevice} &>> $LOG
 
 
 # Set up loopback devices
-losetup -d ${device} &>> $LOG
+losetup -d ${lodevice} &>> $LOG
 device=`kpartx -va ${image} | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
 device="/dev/mapper/${device}"
 bootp=${device}p1
@@ -203,21 +200,29 @@ if $DEBUG; then
     LANG=C chroot ${rootfs} /bin/bash
 fi
 
+# Kill remaining qemu-arm-static processes
+pkill -9 -f ".*qemu-arm-static.*"
+
 # Synchronize file systems and unmount
 sync
 sleep 15
-umount -l ${bootp}
-umount -l ${rootfs}/usr/src/delivery
-umount -l ${rootfs}/dev/pts
-umount -l ${rootfs}/dev
-umount -l ${rootfs}/sys
-umount -l ${rootfs}/proc
-umount -l ${rootfs}
-umount -l ${rootp}
+umount -l ${bootp} &>> $LOG
+umount -l ${rootfs}/usr/src/delivery &>> $LOG
+umount -l ${rootfs}/dev/pts &>> $LOG
+umount -l ${rootfs}/dev &>> $LOG
+umount -l ${rootfs}/sys &>> $LOG
+umount -l ${rootfs}/proc &>> $LOG
+umount -l ${rootfs} &>> $LOG
+umount -l ${rootp} &>> $LOG
+
+# Remove build directory
+rm -rf $BUILD_ENV
 
 echo "Finishing ${image}"
 
 # Remove partition mappings
-kpartx -d ${image} &>> $LOG
+sleep 30
+losetup -d ${lodevice} &>> $LOG
+kpartx -vd ${lodevice} &>> $LOG
 
 echo "Created image ${image}"
