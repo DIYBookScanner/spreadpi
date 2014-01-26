@@ -3,6 +3,7 @@
 # you need at least
 # apt-get install binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstools
 
+
 VERSION="0.1"
 
 # =================== #
@@ -42,6 +43,17 @@ if [ ${EUID} -ne 0 ]; then
   echo "this tool must be run as root"
   exit 1
 fi
+
+# Install dependencies
+for dep in binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstools; do
+  problem=$(dpkg -s $dep|grep installed)
+  echo Checking for $dep: $problem
+  if [ "" == "$problem" ]; then
+    echo "No $dep. Setting up $dep"
+    apt-get --force-yes --yes install $dep
+  fi
+done
+
 
 SCRIPT_DIR=$(readlink -m $(dirname $0))
 DELIVERY_DIR=$SCRIPT_DIR/delivery
