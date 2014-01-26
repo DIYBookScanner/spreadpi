@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DELIVERY=/usr/src/delivery
-
 # Install spreads dependencies
 apt-get -y install build-essential libffi-dev libjpeg8-dev liblua5.1-0\
             libudev-dev libusb-1.0-0-dev libusb-dev nginx python2.7-dev cython\
@@ -30,18 +28,18 @@ pip install git+https://github.com/gbishop/cython-hidapi.git
 
 # Create spreads configuration directoy
 mkdir -p /home/spreads/.config/spreads
-cp $DELIVERY/files/config.yaml /home/spreads/.config/spreads
+cp $DELIVERY_DIR/files/config.yaml /home/spreads/.config/spreads
 chown -R spreads /home/spreads/.config/spreads
 
 # Install spreads init script
-cp $DELIVERY/files/spread /etc/init.d/spread
+cp $DELIVERY_DIR/files/spread /etc/init.d/spread
 chmod a+x /etc/init.d/spread
 
 # Add spreads init script to default boot sequence
 update-rc.d spread defaults
 
 # Install nginx configuration
-cp $DELIVERY/files/nginx_default /etc/nginx/sites-enabled/default
+cp $DELIVERY_DIR/files/nginx_default /etc/nginx/sites-enabled/default
 chmod a+x /etc/nginx/sites-enabled/default
 
 # Add nginx init script to default boot sequence

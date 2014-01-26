@@ -1,13 +1,13 @@
 #!/bin/bash
 
-DELIVERY=/usr/src/delivery
-
 # Create root user
 echo "root:raspberry" | chpasswd
-cp $DELIVERY/bashrc /root/.bashrc
+cp $DELIVERY_DIR/bashrc /root/.bashrc
 
 
 # Create spreads user
 useradd -s /bin/bash -m spreads
 echo "spreads:spreads" |chpasswd
-cp $DELIVERY/bashrc /home/spreads/.bashrc
+cp $DELIVERY_DIR/bashrc /home/spreads/.bashrc
+mkdir -p /home/spreads/.ssh
+cp "$SSH_KEY" /home/spreads/.ssh/authorized_keys

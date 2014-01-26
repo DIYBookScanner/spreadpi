@@ -31,6 +31,9 @@ BUILD_ENV=$(mktemp -d)
 # bootstrapped system
 DEBUG=false
 
+# Path to authorized SSH key, exported for scripts/04-users
+export SSH_KEY=~/.ssh/id_rsa.pub
+
 # -------------------------------------------------------------------------- #
 
 echo "" > $SCRIPT_DIR/build.log
@@ -58,8 +61,10 @@ done
 
 
 SCRIPT_DIR=$(readlink -m $(dirname $0))
-DELIVERY_DIR=$SCRIPT_DIR/delivery
 LOG=$SCRIPT_DIR/build.log
+
+# Exported to subshells
+export DELIVERY_DIR=$SCRIPT_DIR/delivery
 
 rootfs="${BUILD_ENV}/rootfs"
 bootfs="${rootfs}/boot"
