@@ -61,7 +61,7 @@ done
 
 
 SCRIPT_DIR=$(readlink -m $(dirname $0))
-LOG=$SCRIPT_DIR/build$VERSION.log
+LOG=$SCRIPT_DIR/buildlog_$VERSION.txt
 
 # Exported to subshells
 export DELIVERY_DIR=$SCRIPT_DIR/delivery
