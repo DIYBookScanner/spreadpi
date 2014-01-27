@@ -211,9 +211,15 @@ fi
 # Kill remaining qemu-arm-static processes
 pkill -9 -f ".*qemu-arm-static.*"
 
-# Synchronize file systems and unmount
+
+# Synchronize file systems
 sync
 sleep 15
+
+# Make sure we're not in the mounted filesystem anymore, or unmount -l would silently keep waiting!
+cd
+
+# Unmount
 umount -l ${bootp} &>> $LOG
 umount -l ${rootfs}/usr/src/delivery &>> $LOG
 umount -l ${rootfs}/dev/pts &>> $LOG
@@ -225,6 +231,9 @@ umount -l ${rootp} &>> $LOG
 
 # Remove build directory
 rm -rf $BUILD_ENV
+
+# Remove device mappings
+dmsetup remove_all
 
 echo "Finishing ${image}"
 
