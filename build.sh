@@ -232,9 +232,6 @@ umount -l ${rootp} &>> $LOG
 # Remove build directory
 rm -rf $BUILD_ENV
 
-# Remove device mappings
-dmsetup remove_all
-
 echo "Finishing ${image}"
 
 # Remove partition mappings
