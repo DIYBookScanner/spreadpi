@@ -59,6 +59,8 @@ for dep in binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstoo
   fi
 done
 
+# Install raspbian key
+wget http://archive.raspbian.org/raspbian.public.key -O - | apt-key add -
 
 SCRIPT_DIR=$(readlink -m $(dirname $0))
 LOG=$SCRIPT_DIR/buildlog_$VERSION.txt
@@ -96,6 +98,7 @@ w
 
 
 # Set up loopback devices
+dmsetup remove_all
 losetup -d ${lodevice} &>> $LOG
 device=`kpartx -va ${image} | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
 device="/dev/mapper/${device}"
