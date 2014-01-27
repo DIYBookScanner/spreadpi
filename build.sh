@@ -182,7 +182,7 @@ console-common	console-data/keymap/full	select	us
 echo "Running custom bootstrapping scripts"
 for script in usr/src/delivery/scripts/*; do
     echo "/$(basename $script)"
-    LANG=C chroot ${rootfs} /$script &>> $LOG
+    DELIVERY_DIR=/usr/src/delivery LANG=C chroot ${rootfs} /$script &>> $LOG
 done
 
 # Configure default mirror
@@ -236,7 +236,7 @@ echo "Finishing ${image}"
 
 # Remove partition mappings
 sleep 30
-losetup -d ${lodevice} &>> $LOG
 kpartx -vd ${lodevice} &>> $LOG
+losetup -d ${lodevice} &>> $LOG
 
 echo "Created image ${image}"
