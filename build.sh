@@ -21,7 +21,7 @@ DEB_RELEASE="wheezy"
 DEFAULT_DEB_MIRROR="http://mirrordirector.raspbian.org/raspbian"
 
 # Whether to use a local debian mirror (e.g. via 'apt-cacher-ng')
-USE_LOCAL_MIRROR=false
+USE_LOCAL_MIRROR=true
 LOCAL_DEB_MIRROR="http://localhost:3142/archive.raspbian.org/raspbian"
 
 # Path to build directory, by default a temporary directory
