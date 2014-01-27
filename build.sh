@@ -36,7 +36,7 @@ export SSH_KEY=~/.ssh/id_rsa.pub
 
 # -------------------------------------------------------------------------- #
 
-echo "" > $SCRIPT_DIR/build.log
+echo "" > $SCRIPT_DIR/build$VERSION.log
 
 if $USE_LOCAL_MIRROR; then
     DEB_MIRROR=$LOCAL_DEB_MIRROR
@@ -61,7 +61,7 @@ done
 
 
 SCRIPT_DIR=$(readlink -m $(dirname $0))
-LOG=$SCRIPT_DIR/build.log
+LOG=$SCRIPT_DIR/build$VERSION.log
 
 # Exported to subshells
 export DELIVERY_DIR=$SCRIPT_DIR/delivery
