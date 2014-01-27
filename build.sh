@@ -36,7 +36,7 @@ export SSH_KEY=~/.ssh/id_rsa.pub
 
 # -------------------------------------------------------------------------- #
 
-echo "" > $SCRIPT_DIR/build$VERSION.log
+echo "" > $SCRIPT_DIR/buildlog_$VERSION.txt
 
 if $USE_LOCAL_MIRROR; then
     DEB_MIRROR=$LOCAL_DEB_MIRROR
