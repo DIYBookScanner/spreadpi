@@ -128,8 +128,10 @@ function cleanup()
 	fi
 
 	# Remove build directory
-	echo "Remove directory $BUILD_ENV ..." | tee --append "$LOG"
-	rm -rf $BUILD_ENV
+	if [ ! -z "$BUILD_ENV" ]; then
+		echo "Remove directory $BUILD_ENV ..." | tee --append "$LOG"
+		rm -rf "$BUILD_ENV"
+	fi
 
 	# Remove partition mappings
 	echo "sleep 30 seconds..." | tee --append "$LOG"
@@ -140,11 +142,9 @@ function cleanup()
 		losetup -d ${lodevice} &>> $LOG 
 	fi
 	
-	if [ $# -gt 0 ]; then
-		if [ $1 == "-exit" ]; then
-			echo "An error occurred! Read $LOG for details" | tee --append "$LOG"
-			exit 1
-		fi
+	if [ ! -z "$1" ] && [ "$1" == "-exit" ]; then
+		echo "Error occurred! Read $LOG for details" | tee --append "$LOG"
+		exit 1
 	fi
 }
 
