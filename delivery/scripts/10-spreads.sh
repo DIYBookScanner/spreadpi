@@ -13,6 +13,7 @@ rm -rf /tmp/chdkptp.zip
 
 # Install CFFI
 pip install cffi
+pip install jpegtran-cffi
 
 # Install spreads from GitHub
 git clone https://github.com/jbaiter/spreads.git /usr/src/spreads
