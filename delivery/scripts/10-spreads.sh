@@ -19,7 +19,7 @@ pip install jpegtran-cffi
 git clone https://github.com/jbaiter/spreads.git /usr/src/spreads
 cd /usr/src/spreads
 git checkout webplugin
-pip install flask flask-compress zipstream waitress requests
+pip install flask flask-compress zipstream waitress requests pyusb
 pip install -e "."
 pip install -e ".[chdkcamera]"
 pip install -e ".[web]"
