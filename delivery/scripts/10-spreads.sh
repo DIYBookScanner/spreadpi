@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Exit from script if any command returns a non-zero exit status
+# See https://stackoverflow.com/questions/3474526/stop-on-first-error .
+set -e
+
 # Install spreads dependencies
 apt-get -y install build-essential cython libffi-dev libjpeg8-dev liblua5.1-0\
             libudev-dev libusb-1.0-0-dev libusb-dev nginx python2.7-dev\
