@@ -10,7 +10,7 @@ python get-pip.py
 pip --version
 
 # Install pythonic dependencies
-pip install cffi colorama futures flask flask-compress jpegtran-cffi netifaces\
+pip install cffi colorama futures flask flask-compress jpegtran-cffi netifaces \
 requests waitress zipstream
 
 # https://github.com/openxc/openxc-python/issues/18
