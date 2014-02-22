@@ -10,8 +10,11 @@ python get-pip.py
 pip --version
 
 # Install pythonic dependencies
-pip install cffi colorama futures flask flask-compress jpegtran-cffi netifaces \
+pip install cffi colorama futures flask flask-compress jpegtran-cffi \
 requests waitress zipstream
+
+# netifaces needs these extra ones
+pip install --allow-external netifaces --allow-unverified netifaces netifaces
 
 # https://github.com/openxc/openxc-python/issues/18
 pip install --pre pyusb
