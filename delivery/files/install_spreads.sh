@@ -10,7 +10,9 @@ python get-pip.py
 pip --version
 
 # Install pythonic dependencies
-pip install cffi colorama futures flask flask-compress jpegtran-cffi \
+# Installing cffi needs to happen first for some reason
+pip install cffi
+pip install colorama futures flask flask-compress jpegtran-cffi \
 requests waitress zipstream
 
 # netifaces needs these extra ones
