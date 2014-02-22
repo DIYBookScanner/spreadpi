@@ -7,11 +7,12 @@ set -e
 # Install spreads dependencies
 apt-get -y install build-essential cython libffi-dev libjpeg8-dev liblua5.1-0\
             libudev-dev libusb-1.0-0-dev libusb-dev nginx python2.7-dev\
-            python-pyexiv2 python-netifaces python-virtualenv python-yaml unzip || exit 1
-wget --continue https://www.assembla.com/spaces/chdkptp/documents/aDDsvQyhOr465JacwqjQYw/download/aDDsvQyhOr465JacwqjQYw -O /tmp/chdkptp.zip || exit 1
-unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip || exit 1
-rm -rf /tmp/chdkptp.zip || exit 1
+            python-pyexiv2 python-virtualenv unzip
+wget --continue https://www.assembla.com/spaces/chdkptp/documents/aDDsvQyhOr465JacwqjQYw/download/aDDsvQyhOr465JacwqjQYw -O /tmp/chdkptp.zip
+unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
+rm -rf /tmp/chdkptp.zip
 
+# Install all things python as non-root user "spreads" in a virtualenv.
 su --login --command 'virtualenv ~/virtspreads' spreads
 
 su - spreads
@@ -24,7 +25,7 @@ python get-pip.py
 pip --version
 
 # Install pythonic dependencies
-pip install cffi colorama futures flask flask-compress jpegtran-cffi \
+pip install cffi colorama futures flask flask-compress jpegtran-cffi netifaces\
 	requests waitress zipstream
 
 # https://github.com/openxc/openxc-python/issues/18
@@ -38,6 +39,9 @@ python setup.py install
 
 # Install cython-hidapi from GitHub
 pip install git+https://github.com/gbishop/cython-hidapi.git
+
+# List all installed python module versions
+pip freeze &>> $LOG
 
 exit
 
