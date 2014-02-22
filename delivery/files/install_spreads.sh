@@ -1,6 +1,6 @@
 #! /bin/bash
 
-virtualenv ~/virtspreads spreads
+virtualenv ~/virtspreads
 
 . ~/virtspreads/bin/activate
 
