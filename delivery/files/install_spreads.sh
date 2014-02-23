@@ -22,8 +22,8 @@ pip install --allow-external netifaces --allow-unverified netifaces netifaces
 pip install --pre pyusb
 
 # Install spreads from GitHub
-git clone https://github.com/jbaiter/spreads.git /tmp/spreads
-cd /tmp/spreads
+git clone https://github.com/jbaiter/spreads.git ~/virtspreads/src
+cd ~/virtspreads/src
 pip install -e .[web]
 python setup.py install
 
