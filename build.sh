@@ -185,7 +185,7 @@ for script in usr/src/delivery/scripts/*; do
     DELIVERY_DIR=/usr/src/delivery LANG=C chroot ${rootfs} /$script &>> $LOG
 done
 
-LANG=C chroot --userspec=spreads ${rootfs} /usr/scrc/delivery/files/install_spreads.sh &>> $LOG
+LANG=C chroot --userspec=spreads:spreads ${rootfs} /usr/scrc/delivery/files/install_spreads.sh &>> $LOG
 
 # Configure default mirror
 echo "deb ${DEFAULT_DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
