@@ -141,6 +141,7 @@ debootstrap --verbose --foreign --arch armhf --keyring /etc/apt/trusted.gpg ${DE
 cp /usr/bin/qemu-arm-static usr/bin/
 echo "Running debootstrap second stage"
 LANG=C chroot ${rootfs} /debootstrap/debootstrap --second-stage &>> $LOG
+chmod 755 usr/bin/qemu-arm-static
 
 mount ${bootp} ${bootfs}
 
