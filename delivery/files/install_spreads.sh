@@ -1,10 +1,12 @@
 #! /bin/bash
 
-virtualenv ~/virtspreads
+# Using explicit /home/spreads references because of a bug in coreutils non-native architecture chroot handling
+virtualenv /home/spreads/virtspreads
 
-. ~/virtspreads/bin/activate
+. /home/spreads/virtspreads/bin/activate
 
 # Get newest pip version
+cd /home/spreads/virtspreads
 wget https://raw.github.com/pypa/pip/develop/contrib/get-pip.py
 python get-pip.py
 pip --version
@@ -23,7 +25,7 @@ pip install --pre pyusb
 
 # Install spreads from GitHub
 git clone https://github.com/jbaiter/spreads.git ~/virtspreads/src
-cd ~/virtspreads/src
+cd /home/spreads/virtspreads/src
 pip install -e .[web]
 python setup.py install
 
