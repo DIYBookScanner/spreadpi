@@ -187,7 +187,7 @@ for script in usr/src/delivery/scripts/*; do
 done
 
 # Coreutils only works with uid and guid on non-native chroot guest architecture
-LANG=C chroot --userspec=1000:1000 ${rootfs} /usr/scrc/delivery/files/install_spreads.sh &>> $LOG
+# LANG=C chroot --userspec=1000:1000 ${rootfs} /usr/scrc/delivery/files/install_spreads.sh &>> $LOG
 
 # Configure default mirror
 echo "deb ${DEFAULT_DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
