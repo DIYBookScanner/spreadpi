@@ -33,4 +33,4 @@ python setup.py install
 pip install git+https://github.com/gbishop/cython-hidapi.git
 
 # List all installed python module versions
-pip freeze &>> $LOG
+pip freeze
