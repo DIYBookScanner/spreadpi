@@ -13,7 +13,7 @@ unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 rm -rf /tmp/chdkptp.zip
 
 # Install all things python as non-root user "spreads" in a virtualenv.
-#su --login --command "$DELIVERY_DIR/files/install_spreads.sh" spreads
+su --login --command "$DELIVERY_DIR/files/install_spreads.sh" spreads
 
 # Create spreads configuration directoy
 mkdir -p /home/spreads/.config/spreads
