@@ -14,3 +14,6 @@ mkdir -p /home/spreads/.ssh || exit 1
 if [ -e "$SSH_KEY" ]; then
 	cp "$SSH_KEY" /home/spreads/.ssh/authorized_keys || exit 1
 fi
+
+# Set permissions to spreads
+cd /home/spreads && chown -R spreads.spreads *
