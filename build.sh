@@ -13,7 +13,7 @@ fi
 # =================== #
 
 # Size of target SD card in MB
-IMAGESIZE="2000"
+IMAGESIZE="7850"
 # Size of /boot partition
 BOOTSIZE="64M"
 # Debian version
