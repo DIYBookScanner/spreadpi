@@ -17,5 +17,5 @@ fi
 
 # Set permissions to spreads
 shopt -s dotglob
-cd /home/spreads && chown -R spreads.spreads *
+cd /home/spreads && chown -R spreads:spreads *
 shopt -u dotglob
