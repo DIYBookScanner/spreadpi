@@ -16,6 +16,7 @@
 
 # Do NOT "set -e"
 
+VIRTUALENV=/home/spreads/virtspreads
 LOGDIR=/var/log/spreads/
 PATH=/bin:/usr/bin
 USER=spreads
@@ -23,8 +24,8 @@ NAME=`basename $0`
 DESC=$NAME
 LOGFILE="$LOGDIR$NAME.log"
 PIDFILE="/var/run/spread.pid"
-SPREAD='spread web --mode=scanner  --standalone-device '
-CMD="su -l -c \"$SPREAD\" $USER &"
+SPREAD="spread --logfile=$LOGFILE web --mode=scanner --standalone-device "
+CMD="su -l -c \"$VIRTUALENV/bin/$SPREAD\" $USER &"
 
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
@@ -45,6 +46,7 @@ do_start() {
   if [ -e $PIDFILE ]; then
     return 1
   fi
+  . $VIRTUALENV/bin/activate
   eval $CMD && echo $! > $PIDFILE
   if [ $? = 0 ]; then
     return 0
