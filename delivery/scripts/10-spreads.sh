@@ -39,4 +39,4 @@ update-rc.d nginx defaults
 # Create spreads logfile
 mkdir -p /var/log/spreads
 touch /var/log/spreads/spread.log
-chown spreads.spreads /var/log/spreads/spread.log
+chown -R spreads:spreads /var/log/spreads
