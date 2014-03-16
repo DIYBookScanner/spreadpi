@@ -22,6 +22,11 @@ mkdir -p /home/spreads/.config/spreads
 cp $DELIVERY_DIR/files/config.yaml /home/spreads/.config/spreads
 chown -R spreads:spreads /home/spreads/.config/spreads
 
+# Make sure that everything file in ~spreads has correct ownership set
+shopt -s dotglob
+cd /home/spreads && chown -R spreads:spreads *
+shopt -u dotglob
+
 # Install spreads init script
 cp $DELIVERY_DIR/files/spread /etc/init.d/spread
 chmod a+x /etc/init.d/spread
