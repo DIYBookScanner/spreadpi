@@ -20,7 +20,7 @@ su --login --command "$DELIVERY_DIR/files/install_spreads.sh" spreads
 # Create spreads configuration directoy
 mkdir -p /home/spreads/.config/spreads
 cp $DELIVERY_DIR/files/config.yaml /home/spreads/.config/spreads
-chown -R spreads /home/spreads/.config/spreads
+chown -R spreads:spreads /home/spreads/.config/spreads
 
 # Install spreads init script
 cp $DELIVERY_DIR/files/spread /etc/init.d/spread
