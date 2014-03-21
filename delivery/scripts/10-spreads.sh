@@ -8,7 +8,7 @@ set -e
 apt-get -y install build-essential libffi-dev libjpeg8-dev liblua5.1-0\
             libudev-dev libusb-1.0-0-dev libusb-dev libyaml-dev nginx\
             python2.7-dev python-virtualenv unzip
-wget --continue https://www.assembla.com/spaces/chdkptp/documents/aDDsvQyhOr465JacwqjQYw/download/aDDsvQyhOr465JacwqjQYw -O /tmp/chdkptp.zip
+wget --continue https://www.assembla.com/spaces/chdkptp/documents/aH1W4CQbmr46hcacwqjQYw/download/aH1W4CQbmr46hcacwqjQYw -O /tmp/chdkptp.zip
 unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 # User spreads should be able to use chdkptp...
 chmod -R 755 /usr/local/lib/chdkptp/
