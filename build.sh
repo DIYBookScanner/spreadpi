@@ -146,8 +146,19 @@ chmod 755 usr/bin/qemu-arm-static
 mount ${bootp} ${bootfs}
 
 # Configure Debian release and mirror
+# Temporarily add jessie to work around https://github.com/DIYBookScanner/spreadpi/issues/16
 echo "deb ${DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
+deb ${DEB_MIRROR} jessie main
 " > etc/apt/sources.list
+
+# Pin to stable by default
+echo "Package: *
+Pin: release a=${DEB_RELEASE}
+Pin-Priority: 900
+
+Package: *
+Pin: release a=jessie
+Pin-Priority: 800" > etc/apt/preferences
 
 # Configure Raspberry Pi boot options
 echo "dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait" > boot/cmdline.txt
