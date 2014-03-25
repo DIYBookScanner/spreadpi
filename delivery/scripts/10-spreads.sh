@@ -17,7 +17,8 @@ unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 chmod -R 755 /usr/local/lib/chdkptp/
 rm -rf /tmp/chdkptp.zip
 
-# Pythin dbus bindings need to be installed through configure/make/make install
+# Python dbus bindings need to be installed through configure/make/make install
+echo "Installing python dbus bindings"
 mkdir -p /tmp/python-dbus
 wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz -o /tmp/python-dbus/dbus-python-1.2.0.tar.gz
 cd /tmp/python-dbus
@@ -29,6 +30,7 @@ cd /tmp
 rm -rf /tmp/python-dbus
 
 # Hidapi-hidraw
+echo "Installing hidapi-hidraw..."
 cd /tmp
 git clone git://github.com/signal11/hidapi.git
 cd hidapi/linux
@@ -38,34 +40,34 @@ cp libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so.0
 cd /tmp
 rm -rf /tmp/hidapi
 
-# Install all things python as non-root user "spreads" in a virtualenv.
+echo "Installing all things python as non-root user spreads in a virtualenv..."
 su --login --command "$DELIVERY_DIR/files/install_spreads.sh" spreads
 
-# Create spreads configuration directoy
+echo "Creating spreads configuration directory"
 mkdir -p /home/spreads/.config/spreads
 cp $DELIVERY_DIR/files/config.yaml /home/spreads/.config/spreads
 chown -R spreads:spreads /home/spreads/.config/spreads
 
-# Make sure that everything file in ~spreads has correct ownership set
+echo "Making sure that everything file in ~spreads has correct ownership set..."
 shopt -s dotglob
 cd /home/spreads && chown -R spreads:spreads *
 shopt -u dotglob
 
-# Install spreads init script
+echo "Installing spreads init script..."
 cp $DELIVERY_DIR/files/spread /etc/init.d/spread
 chmod a+x /etc/init.d/spread
 
-# Add spreads init script to default boot sequence
+echo "Adding spreads init script to default boot sequence..."
 update-rc.d spread defaults
 
-# Install nginx configuration
+echo "Installing nginx configuration..."
 cp $DELIVERY_DIR/files/nginx_default /etc/nginx/sites-enabled/default
 chmod a+x /etc/nginx/sites-enabled/default
 
-# Add nginx init script to default boot sequence
+echo "Adding nginx init script to default boot sequence..."
 update-rc.d nginx defaults
 
-# Create spreads logfile
+echo "Creating spreads logfile..."
 mkdir -p /var/log/spreads
 touch /var/log/spreads/spread.log
 chown -R spreads:spreads /var/log/spreads
