@@ -17,13 +17,26 @@ pip install cffi
 pip install colorama futures flask flask-compress hidapi-cffi \
 jpegtran-cffi requests waitress zipstream
 
+echo "Installing netifaces..."
 # netifaces needs these extra ones
 pip install --allow-external netifaces --allow-unverified netifaces netifaces
 
+echo "Installing pyusb..."
 # https://github.com/openxc/openxc-python/issues/18
 pip install --pre pyusb
 
-# Install spreads from GitHub
+echo "Installing python dbus bindings..."
+cd /tmp
+wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz
+tar zxvf dbus-python-1.2.0.tar.gz
+cd dbus-python-1.2.0
+./configure --prefix /home/spreads/virtspreads/local/
+make
+make install
+cd /tmp
+rm -rf /tmp/dbus-python-1.2.0*
+
+echo "Installing spreads from github..."
 git clone https://github.com/DIYBookScanner/spreads.git ~/virtspreads/src
 cd /home/spreads/virtspreads/src
 pip install -e .[web]
