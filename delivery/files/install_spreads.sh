@@ -29,8 +29,6 @@ cd /home/spreads/virtspreads/src
 pip install -e .[web]
 python setup.py install
 
-# Install cython-hidapi from GitHub
-pip install git+https://github.com/gbishop/cython-hidapi.git
 
 # List all installed python module versions
 pip freeze
