@@ -18,15 +18,15 @@ chmod -R 755 /usr/local/lib/chdkptp/
 rm -rf /tmp/chdkptp.zip
 
 echo "Installing python dbus bindings..."
-mkdir -p /tmp/python-dbus
-wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz -O /tmp/python-dbus/dbus-python-1.2.0.tar.gz
-cd /tmp/python-dbus
-tar zxvf *.tar.gz
+cd /tmp
+wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz
+tar zxvf dbus-python-1.2.0.tar.gz
+cd dbus-python-1.2.0
 ./configure --prefix /home/spreads/virtspreads/local/
 make
 make install
 cd /tmp
-rm -rf /tmp/python-dbus
+rm -rf /tmp/dbus-python-1.2.0*
 
 echo "Installing hidapi-hidraw..."
 cd /tmp
