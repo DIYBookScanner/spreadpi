@@ -17,17 +17,6 @@ unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 chmod -R 755 /usr/local/lib/chdkptp/
 rm -rf /tmp/chdkptp.zip
 
-echo "Installing python dbus bindings..."
-cd /tmp
-wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz
-tar zxvf dbus-python-1.2.0.tar.gz
-cd dbus-python-1.2.0
-./configure --prefix /home/spreads/virtspreads/local/
-make
-make install
-cd /tmp
-rm -rf /tmp/dbus-python-1.2.0*
-
 echo "Installing hidapi-hidraw..."
 cd /tmp
 git clone git://github.com/signal11/hidapi.git
