@@ -9,11 +9,34 @@ apt-get -y install build-essential libdbus-1-dev libdbus-glib-1-dev\
             libffi-dev libjpeg8-dev liblua5.1-0 libudev-dev\
             libusb-1.0-0-dev libusb-dev libusbhid-common libyaml-dev\
              nginx python2.7-dev python-virtualenv unzip
+
+# Chdkptp
 wget --continue https://www.assembla.com/spaces/chdkptp/documents/aH1W4CQbmr46hcacwqjQYw/download/aH1W4CQbmr46hcacwqjQYw -O /tmp/chdkptp.zip
 unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 # User spreads should be able to use chdkptp...
 chmod -R 755 /usr/local/lib/chdkptp/
 rm -rf /tmp/chdkptp.zip
+
+# Pythin dbus bindings need to be installed through configure/make/make install
+mkdir -p /tmp/python-dbus
+wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz -o /tmp/python-dbus/dbus-python-1.2.0.tar.gz
+cd /tmp/python-dbus
+tar zxvf *.tar.gz
+./configure --prefix /home/spreads/virtspreads/local/
+make
+make install
+cd /tmp
+rm -rf /tmp/python-dbus
+
+# Hidapi-hidraw
+cd /tmp
+git clone git://github.com/signal11/hidapi.git
+cd hidapi/linux
+mv Makefile-manual Makefile
+make
+cp libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so.0
+cd /tmp
+rm -rf /tmp/hidapi
 
 # Install all things python as non-root user "spreads" in a virtualenv.
 su --login --command "$DELIVERY_DIR/files/install_spreads.sh" spreads
