@@ -14,7 +14,7 @@ pip --version
 # Install pythonic dependencies
 # Installing cffi needs to happen first for some reason
 pip install cffi
-pip install colorama cython futures flask flask-compress hidapi-cffi \
+pip install colorama futures flask flask-compress hidapi-cffi \
 jpegtran-cffi requests waitress zipstream
 
 # netifaces needs these extra ones
