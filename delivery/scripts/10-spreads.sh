@@ -19,7 +19,7 @@ rm -rf /tmp/chdkptp.zip
 
 echo "Installing python dbus bindings..."
 mkdir -p /tmp/python-dbus
-wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz -o /tmp/python-dbus/dbus-python-1.2.0.tar.gz
+wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz -O /tmp/python-dbus/dbus-python-1.2.0.tar.gz
 cd /tmp/python-dbus
 tar zxvf *.tar.gz
 ./configure --prefix /home/spreads/virtspreads/local/
