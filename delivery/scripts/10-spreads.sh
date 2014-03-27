@@ -23,7 +23,9 @@ git clone git://github.com/signal11/hidapi.git
 cd hidapi/linux
 mv Makefile-manual Makefile
 make
-cp libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so.0
+cp libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so
+ln -s /usr/lib/libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so.0
+chmod 755 /usr/lib/libhidapi-hidraw.so*
 cd /tmp
 rm -rf /tmp/hidapi
 
