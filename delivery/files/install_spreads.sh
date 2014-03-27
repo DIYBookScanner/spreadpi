@@ -26,15 +26,7 @@ echo "Installing pyusb..."
 pip install --pre pyusb
 
 echo "Installing python dbus bindings..."
-cd /tmp
-wget http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.0.tar.gz
-tar zxvf dbus-python-1.2.0.tar.gz
-cd dbus-python-1.2.0
-./configure --prefix /home/spreads/virtspreads/local/
-make
-make install
-cd /tmp
-rm -rf /tmp/dbus-python-1.2.0*
+ln -s /usr/lib/python2.7/dist-packages/*dbus* ~/virtspreads/lib/python2.7/site-packages/
 
 echo "Installing spreads from github..."
 git clone https://github.com/DIYBookScanner/spreads.git ~/virtspreads/src
