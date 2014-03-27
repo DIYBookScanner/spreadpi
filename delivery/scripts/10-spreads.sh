@@ -8,7 +8,7 @@ echo "Installing spreads debian package dependencies..."
 apt-get -y install build-essential libdbus-1-dev libdbus-glib-1-dev\
             libffi-dev libjpeg8-dev liblua5.1-0 libudev-dev\
             libusb-1.0-0-dev libusb-dev libusbhid-common libyaml-dev\
-             nginx python2.7-dev python-virtualenv unzip
+            nginx python2.7-dev python-dbus python-virtualenv unzip
 
 echo "Installing chdkptp..."
 wget --continue https://www.assembla.com/spaces/chdkptp/documents/aH1W4CQbmr46hcacwqjQYw/download/aH1W4CQbmr46hcacwqjQYw -O /tmp/chdkptp.zip
