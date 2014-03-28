@@ -17,17 +17,11 @@ unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 chmod -R 755 /usr/local/lib/chdkptp/
 rm -rf /tmp/chdkptp.zip
 
-echo "Installing hidapi-hidraw..."
+echo "Installing libhidapi-libusb..."
 cd /tmp
-git clone git://github.com/signal11/hidapi.git
-cd hidapi/linux
-mv Makefile-manual Makefile
-make
-cp libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so
-ln -s /usr/lib/libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so.0
-chmod 755 /usr/lib/libhidapi-hidraw.so*
-cd /tmp
-rm -rf /tmp/hidapi
+wget http://buildbot.diybookscanner.eu/libhidapi-libusb0_0.8.0~rc1%2bgit20140201.3a66d4e%2bdfsg-2_armhf.deb
+dpkg -i libhidapi-libusb0_0.8.0~rc1+git20140201.3a66d4e+dfsg-2_armhf.deb
+rm -rf libhidapi-libusb0_0.8.0~rc1+git20140201.3a66d4e+dfsg-2_armhf.deb
 
 echo "Installing all things python as non-root user spreads in a virtualenv..."
 su --login --command "$DELIVERY_DIR/files/install_spreads.sh" spreads
