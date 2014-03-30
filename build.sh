@@ -149,7 +149,7 @@ echo "deb ${DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
 " > etc/apt/sources.list
 
 # Configure Raspberry Pi boot options
-echo "dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait" > boot/cmdline.txt
+echo "dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait rootflags=noatime,nodiratime" > boot/cmdline.txt
 
 # Set up mount points
 echo "proc            /proc           proc    defaults        0       0
