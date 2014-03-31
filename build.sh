@@ -155,8 +155,6 @@ echo "dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=
 # Set up mount points
 echo "proc            /proc           proc    defaults        0       0
 /dev/mmcblk0p1  /boot           vfat    defaults        0       0
-none            /var/run        tmpfs   size=1M,noatime             0   0
-none            /var/log        tmpfs   size=1M,noatime             0   0
 " > etc/fstab
 
 # Configure Hostname
