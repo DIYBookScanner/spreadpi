@@ -24,7 +24,7 @@ NAME=`basename $0`
 DESC=$NAME
 LOGFILE="$LOGDIR$NAME.log"
 PIDFILE="/var/run/spread.pid"
-SPREAD="spread --logfile=$LOGFILE web --mode=scanner --standalone-device "
+SPREAD="spread --logfile=$LOGFILE --loglevel=warning web --mode=scanner --standalone-device "
 CMD="su -l -c \"$VIRTUALENV/bin/$SPREAD\" $USER &"
 
 # Load the VERBOSE setting and other rcS variables
