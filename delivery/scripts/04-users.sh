@@ -11,6 +11,9 @@ echo "spreads:spreads" |chpasswd || exit 1
 cp "$DELIVERY_DIR/files/bashrc" /home/spreads/.bashrc || exit 1
 mkdir -p /home/spreads/.ssh || exit 1
 
+# Needed for mounting usb disks
+adduser spreads plugdev
+
 if [ -e "$SSH_KEY" ]; then
 	cp "$SSH_KEY" /home/spreads/.ssh/authorized_keys || exit 1
 fi
