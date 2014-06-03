@@ -5,26 +5,22 @@ set -e
 apt-get -y install build-essential libffi-dev libjpeg8-dev liblua5.2-0\
            libudev-dev libusb-1.0-0-dev libusb-dev nginx python2.7-dev\
            python-netifaces python-pip python-yaml unzip
+wget http://jbaiter.de/files/hidapi/libhidapi-libusb0_0.8.0~rc1+git20140201.3a66d4e+dfsg-2_armhf.deb -O /tmp/libhidapi.deb
+dpkg -i /tmp/libhidapi.deb
+rm -f /tmp/libhidapi.deb
 wget --continue https://www.assembla.com/spaces/chdkptp/documents/aDDsvQyhOr465JacwqjQYw/download/aDDsvQyhOr465JacwqjQYw -O /tmp/chdkptp.zip
 unzip -d /usr/local/lib/chdkptp /tmp/chdkptp.zip
 rm -rf /tmp/chdkptp.zip
-
-# Get newest pip version
-pip install --upgrade pip
-mv /usr/bin/pip /usr/bin/pip.old
-ln -s /usr/local/bin/pip /usr/bin/pip
-pip --version
 
 # Install CFFI
 pip install cffi
 
 # Install spreads from GitHub
-#git clone https://github.com/jbaiter/spreads.git /usr/src/spreads
-pip install -e /usr/src/delivery/spreads
-pip install -e "/usr/src/delivery/spreads/[chdkcamera]"
-pip install -e "/usr/src/delivery/spreads/[gphoto2camera]"
-pip install -e "/usr/src/delivery/spreads/[hidtrigger]"
-pip install -e "/usr/src/delivery/spreads/[web]"
+git clone https://github.com/jbaiter/spreads.git -b postprocessing_api /usr/src/spreads
+pip install -e /usr/src/spreads
+pip install -e /usr/src/spreads[chdkcamera]
+pip install -e /usr/src/spreads[hidtrigger]
+pip install -e /usr/src/spreads[web]
 
 # Create spreads configuration directoy
 mkdir -p /home/spreads/.config/spreads
