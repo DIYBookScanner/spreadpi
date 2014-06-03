@@ -4,7 +4,7 @@ set -e
 # Install spreads dependencies
 apt-get -y install build-essential libffi-dev libjpeg8-dev liblua5.2-0\
            libudev-dev libusb-1.0-0-dev libusb-dev nginx python2.7-dev\
-           python-netifaces python-pip python-yaml unzip
+           python-netifaces python-pip python-yaml unzip python-dbus
 wget http://jbaiter.de/files/hidapi/libhidapi-libusb0_0.8.0~rc1+git20140201.3a66d4e+dfsg-2_armhf.deb -O /tmp/libhidapi.deb
 dpkg -i /tmp/libhidapi.deb
 rm -f /tmp/libhidapi.deb
