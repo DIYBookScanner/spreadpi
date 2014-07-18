@@ -3,7 +3,6 @@
 # Provides:          spreads-initscript
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
-# Should-Start:      $nginx
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: spreads debian init script
