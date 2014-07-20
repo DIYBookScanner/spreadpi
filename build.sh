@@ -1,11 +1,95 @@
 #!/bin/bash
 
+# Exit on errors
+ORIG_DIR=$(pwd)
+set -e
+function print_info()
+{
+    green='\e[0;32m'
+    endColor='\e[0m'
+    echo -e "${green}=> $1${endColor}"
+    if [[ -n $LOG && -f $LOG ]]; then
+        echo "=> $1" >> "$LOG"
+    fi
+}
+
+function print_error()
+{
+    red='\e[0;31m'
+    endColor='\e[0m'
+    echo -e "${red}!!> $1${endColor}"
+    if [[ -n $LOG && -f $LOG ]]; then
+        echo "!!> $1" >> "$LOG"
+    fi
+}
+
+function cleanup()
+{
+    set +e
+
+    if [ ! -z "$1" ] && [ "$1" == "-clean" ]; then
+        print_info "Cleaning up"
+    else
+        print_error "Error occurred! Read $LOG for details."
+        if $DEBUG && $CHROOT_READY; then
+            LANG=C chroot ${rootfs} /bin/bash
+        fi
+        print_info "Cleaning up"
+    fi
+    # Make sure we're not in the mounted filesystem anymore, or unmount -l would silently keep waiting!
+    print_info "Change working directory to $ORIG_DIR..."
+    cd $ORIG_DIR
+
+    # Unmount
+    if [ ! -z ${bootp} ]; then
+        umount -l ${bootp} &>> $LOG
+    fi
+    umount -l ${rootfs}/usr/src/delivery &>> $LOG
+    umount -l ${rootfs}/dev/pts &>> $LOG
+    umount -l ${rootfs}/dev &>> $LOG
+    umount -l ${rootfs}/sys &>> $LOG
+    umount -l ${rootfs}/proc &>> $LOG
+    umount -l ${rootfs} &>> $LOG
+    if [ ! -z ${rootp} ]; then
+        umount -l ${rootp} &>> $LOG
+    fi
+
+    # Remove build directory
+    if [ ! -z "$BUILD_ENV" ]; then
+        print_info "Remove directory $BUILD_ENV ..."
+        rm -rf "$BUILD_ENV"
+    fi
+
+    # Remove partition mappings
+    if [ ! -z ${lodevice} ]; then
+        print_info "remove $lodevice ..."
+        kpartx -vd ${lodevice} &>> $LOG
+        losetup -d ${lodevice} &>> $LOG
+    fi
+}
+
+
+if [ ${EUID} -ne 0 ]; then
+  print_error "this tool must be run as root"
+  exit 1
+fi
+
+# When true, script will drop into a chroot shell at the end to inspect the
+# bootstrapped system
+if [ -z "$DEBUG" ]; then
+    DEBUG=false
+fi
+
 # Try to get version string from Git
-VERSION=$(git tag -l --contains HEAD)
+VERSION="$(git tag -l --contains HEAD)"
 if [ -z "$RELEASE" ]; then
-    # We append a random number, since otherwise our loopback devices will
+    # We append the date, since otherwise our loopback devices will
     # be broken on multiple runs if we use the same image name each time.
-    VERSION="git@$(git log --pretty=format:'%h' -n 1)_$RANDOM"
+    VERSION="git@$(git log --pretty=format:'%h' -n 1)_$(date +%s)"
+fi
+# Make sure we have a version string, if not use the current date
+if [ -z "$VERSION" ]; then
+    VERSION="$(date +%s)"
 fi
 
 # =================== #
@@ -13,73 +97,107 @@ fi
 # =================== #
 
 # Size of target SD card in MB
-IMAGESIZE="2000"
+if [ -z "$IMAGESIZE" ]; then
+    IMAGESIZE="2000"
+fi
 # Size of /boot partition
-BOOTSIZE="64M"
+if [ -z "$BOOTSIZE" ]; then
+    BOOTSIZE="64M"
+fi
 # Debian version
-DEB_RELEASE="wheezy"
-DEFAULT_DEB_MIRROR="http://mirrordirector.raspbian.org/raspbian"
-
+if [ -z "$DEB_RELEASE" ]; then
+    DEB_RELEASE="stable"
+fi
+if [ -z "$DEFAULT_DEB_MIRROR" ]; then
+    DEFAULT_DEB_MIRROR="http://mirrordirector.raspbian.org/raspbian"
+fi
 # Whether to use a local debian mirror (e.g. via 'apt-cacher-ng')
-USE_LOCAL_MIRROR=true
-LOCAL_DEB_MIRROR="http://localhost:3142/archive.raspbian.org/raspbian"
-
-# Path to build directory, by default a temporary directory
-BUILD_ENV=$(mktemp -d)
-
-# When true, script will drop into a chroot shell at the end to inspect the
-# bootstrapped system
-DEBUG=false
+if [ -z "$USE_LOCAL_MIRROR" ]; then
+    USE_LOCAL_MIRROR=false
+fi
+if [ -z "$LOCAL_DEB_MIRROR" ]; then
+    LOCAL_DEB_MIRROR="http://localhost:3142/archive.raspbian.org/raspbian"
+fi
 
 # Path to authorized SSH key, exported for scripts/04-users
-export SSH_KEY=~/.ssh/id_rsa.pub
+if [ -z "$SSH_KEY" ]; then
+    SSH_KEY="~/.ssh/id_rsa.pub"
+fi
+export SSH_KEY
+
+if [ -z "$RASBIAN_KEY_URL" ]; then
+    RASBIAN_KEY_URL="http://archive.raspbian.org/raspbian.public.key"
+fi
 
 # -------------------------------------------------------------------------- #
 
-echo "" > $SCRIPT_DIR/buildlog_$VERSION.txt
+# Path to build directory, by default a temporary directory
+
+# Register cleanup function to run before we exit
+trap cleanup EXIT
+
+print_info "Creating temporary directory..."
+BUILD_ENV=$(mktemp -d)
+print_info "Temporary directory created at $BUILD_ENV"
+
+BASE_DIR="$(dirname $0)"
+SCRIPT_DIR="$(readlink -m $BASE_DIR)"
+LOG="${SCRIPT_DIR}/buildlog_${VERSION}.txt"
+IMG="${SCRIPT_DIR}/spreadpi_${VERSION}.img"
+DELIVERY_DIR="$SCRIPT_DIR/delivery"
+rootfs="${BUILD_ENV}/rootfs"
+bootfs="${rootfs}/boot"
+QEMU_ARM_STATIC="/usr/bin/qemu-arm-static"
+CHROOT_READY=false
+
+# Exported to subshells
+export DELIVERY_DIR
+
+print_info "Creating log file $LOG"
+touch "$LOG"
 
 if $USE_LOCAL_MIRROR; then
     DEB_MIRROR=$LOCAL_DEB_MIRROR
 else
     DEB_MIRROR=$DEFAULT_DEB_MIRROR
 fi
+print_info "Using mirror $DEB_MIRROR"
 
-if [ ${EUID} -ne 0 ]; then
-  echo "this tool must be run as root"
-  exit 1
-fi
+# Create build dir
+print_info "Create directory $BUILD_ENV"
+mkdir -p "${BUILD_ENV}"
+
+# Create image mount dir
+print_info "Create image mount point $rootfs"
+mkdir -p "${rootfs}"
 
 # Install dependencies
 for dep in binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstools; do
   problem=$(dpkg -s $dep|grep installed)
-  echo Checking for $dep: $problem
   if [ "" == "$problem" ]; then
-    echo "No $dep. Setting up $dep"
-    apt-get --force-yes --yes install $dep
+    print_info "No $dep. Setting up $dep"
+    apt-get --force-yes --yes install "$dep" &>> "$LOG"
   fi
 done
 
+
 # Install raspbian key
-wget http://archive.raspbian.org/raspbian.public.key -O - | apt-key add -
-
-SCRIPT_DIR=$(readlink -m $(dirname $0))
-LOG=$SCRIPT_DIR/buildlog_$VERSION.txt
-
-# Exported to subshells
-export DELIVERY_DIR=$SCRIPT_DIR/delivery
-
-rootfs="${BUILD_ENV}/rootfs"
-bootfs="${rootfs}/boot"
-
-mkdir -p ${BUILD_ENV}
+print_info "Fetching and installing rasbian public key from $RASBIAN_KEY_URL"
+wget --quiet "$RASBIAN_KEY_URL" -O - | apt-key add - &>> "$LOG"
 
 # Create image file
-image="${SCRIPT_DIR}/spreadpi_${VERSION}.img"
-echo "Initializing image file $image"
-dd if=/dev/zero of=${image} bs=1MB count=$IMAGESIZE &>> $LOG
-lodevice=`losetup -f --show ${image}` &>> $LOG
+print_info "Initializing image file $IMG"
+dd if=/dev/zero of=${IMG} bs=1MB count=$IMAGESIZE &>> "$LOG"
+
+print_info "Creating a loopback device for $IMG..."
+lodevice=$(losetup -f --show ${IMG})
+print_info "Loopback $lodevice created."
 
 # Setup up /boot and /root partitions
+# TODO: fdisk always returns 1, so we have to temporary set +e
+set +e
+# TODO: find other way to verify partitions made (maybe fdisk | wc -l)
+print_info "Creating partitions on $IMG..."
 echo "
 n
 p
@@ -94,149 +212,166 @@ p
 
 
 w
-" | fdisk ${lodevice} &>> $LOG
-
+" | fdisk ${lodevice} &>> "$LOG"
+set -e
 
 # Set up loopback devices
-dmsetup remove_all
-losetup -d ${lodevice} &>> $LOG
-device=`kpartx -va ${image} | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
+print_info "Removing $lodevice ..."
+dmsetup remove_all &>> "$LOG"
+losetup -d ${lodevice} &>> "$LOG"
+
+print_info "Creating device map for $IMG ... "
+device=$(kpartx -va ${IMG} | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1)
 device="/dev/mapper/${device}"
-bootp=${device}p1
-rootp=${device}p2
+print_info "Device map created at $device"
+
+bootp="${device}p1"
+rootp="${device}p2"
+
+# Do bootp and rootp exist?
+sleep 5
+print_info "Checking if $bootp and $rootp exist..."
+[ ! -e "$bootp" ] && exit 1
+[ ! -e "$rootp" ] && exit 1
 
 # Create file systems
-mkfs.vfat ${bootp} &>> $LOG
-mkfs.ext4 ${rootp} &>> $LOG
+print_info "Creating filesystems on $IMG ..."
+mkfs.vfat ${bootp} &>> "$LOG"
+mkfs.ext4 ${rootp} &>> "$LOG"
 
-# Create directory structure
-mkdir -p ${rootfs}
+print_info "Mounting $rootp to $rootfs ..."
+mount ${rootp} ${rootfs} &>> "$LOG"
 
-mount ${rootp} ${rootfs}
-
+print_info "Creating directories in $rootfs ..."
 mkdir -p ${rootfs}/proc
 mkdir -p ${rootfs}/sys
-mkdir -p ${rootfs}/dev
 mkdir -p ${rootfs}/dev/pts
 mkdir -p ${rootfs}/usr/src/delivery
 
 # Mount pseudo file systems
+print_info "Mounting pseudo filesystems in $rootfs ..."
 mount -t proc none ${rootfs}/proc
 mount -t sysfs none ${rootfs}/sys
 mount -o bind /dev ${rootfs}/dev
 mount -o bind /dev/pts ${rootfs}/dev/pts
 
 # Mount our delivery path
+print_info "Mounting $DELIVERY_DIR in $rootfs ..."
 mount -o bind ${DELIVERY_DIR} ${rootfs}/usr/src/delivery
 
-cd ${rootfs}
-
+print_info "Change working directory to ${rootfs} ..."
+cd "${rootfs}"
 
 # First stage of bootstrapping, from the outside
-echo "Running debootstrap first stage"
-debootstrap --verbose --foreign --arch armhf --keyring /etc/apt/trusted.gpg ${DEB_RELEASE} ${rootfs} ${DEB_MIRROR} &>> $LOG
-
+print_info "Running debootstrap first stage"
+debootstrap --verbose --foreign --arch armhf --keyring \
+/etc/apt/trusted.gpg ${DEB_RELEASE} ${rootfs} ${DEB_MIRROR} &>> $LOG
 
 # Second stage, using chroot and qemu-arm from the inside
-cp /usr/bin/qemu-arm-static usr/bin/
-echo "Running debootstrap second stage"
-LANG=C chroot ${rootfs} /debootstrap/debootstrap --second-stage &>> $LOG
+print_info "Copying $QEMU_ARM_STATIC into $rootfs"
+cp "$QEMU_ARM_STATIC" "${rootfs}/usr/bin/" &>> $LOG
 
-mount ${bootp} ${bootfs}
+print_info "Running debootstrap second stage"
+LANG=C chroot "${rootfs}" /debootstrap/debootstrap --second-stage &>> $LOG
+
+print_info "Mounting $bootp to $bootfs ..."
+mount ${bootp} ${bootfs} &>> $LOG
 
 # Configure Debian release and mirror
+print_info "Configure apt in $rootfs..."
 echo "deb ${DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
-" > etc/apt/sources.list
+deb http://spreads.jbaiter.de/raspbian wheezy main
+" > "${rootfs}/etc/apt/sources.list"
 
 # Configure Raspberry Pi boot options
-echo "dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait noatime nodiratime" > boot/cmdline.txt
+print_info "Writing $BOOT_CONF ..."
+echo "
+dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait
+" > /boot/cmdline.txt
 
 # Set up mount points
-echo "proc            /proc           proc    defaults        0       0
-/dev/mmcblk0p1  /boot           vfat    defaults        0       0
-" > etc/fstab
+print_info "Writing $rootfs/etc/fstab ..."
+echo "
+proc            /proc             proc    defaults                   0       0
+/dev/mmcblk0p1  /boot             vfat    defaults                   0       2
+/dev/mmcblk0p2  /                 ext4    defaults,noatime           0       1
+tmpfs           /tmp              tmpfs   defaults,noatime,mode=1777 0       0
+tmpfs           /var/log          tmpfs   defaults,noatime,mode=0755 0       0
+tmpfs           /tmp              tmpfs   defaults,noatime,nosuid,size=100m    0 0
+tmpfs           /var/tmp          tmpfs   defaults,noatime,nosuid,size=30m    0 0
+tmpfs           /var/lock         tmpfs   defaults,noatime,mode=0755 0       0
+tmpfs           /var/log          tmpfs   defaults,noatime,nosuid,mode=0755,size=100m    0 0
+tmpfs           /var/run          tmpfs   defaults,noatime,nosuid,mode=0755,size=2m    0 0
+" > "$rootfs/etc/fstab"
 
 # Configure Hostname
-echo "spreadpi" > etc/hostname
+print_info "Writing $rootfs/etc/hostname ..."
+echo "spreadpi" > "$rootfs/etc/hostname"
 
 # Configure networking
+print_info "Writing $rootfs/etc/network/interfaces ..."
 echo "auto lo
 iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
-" > etc/network/interfaces
-
+" > "$rootfs/etc/network/interfaces"
 
 # Configure loading of proprietary kernel modules
+print_info "Writing $rootfs/etc/modules ..."
 echo "vchiq
 snd_bcm2835
-" >> etc/modules
+" >> "$rootfs/etc/modules"
 
-# TODO: What does this do?
+print_info "Setting up keyboard layout..."
 echo "console-common	console-data/keymap/policy	select	Select keymap from full list
 console-common	console-data/keymap/full	select	us
-" > debconf.set
+" > "$rootfs/debconf.set"
 
 # Run user-defined scripts from DELIVERY_DIR/scripts
-echo "Running custom bootstrapping scripts"
-for script in usr/src/delivery/scripts/*; do
-    echo "/$(basename $script)"
-    DELIVERY_DIR=/usr/src/delivery LANG=C chroot ${rootfs} /$script &>> $LOG
+print_info "Running custom bootstrapping scripts"
+for path in $rootfs/usr/src/delivery/scripts/*; do
+    script=$(basename "$path")
+    print_info "- $script"
+    DELIVERY_DIR=/usr/src/delivery LANG=C chroot ${rootfs} "/usr/src/delivery/scripts/$script" &>> $LOG
 done
 
 # Configure default mirror
+print_info "Writing $rootfs/apt/sources.list again, using non-local mirror..."
 echo "deb ${DEFAULT_DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
-" > etc/apt/sources.list
-
+deb http://spreads.jbaiter.de/raspbian wheezy main
+" > "$rootfs/etc/apt/sources.list"
 
 # Clean up
-echo "Cleaning up bootstrapped system"
+print_info "Cleaning up bootstrapped system"
 echo "#!/bin/bash
 aptitude update
 aptitude clean
 apt-get clean
 rm -f cleanup
-" > cleanup
-chmod +x cleanup
+" > "$rootfs/cleanup"
+chmod +x "$rootfs/cleanup"
 LANG=C chroot ${rootfs} /cleanup &>> $LOG
 
-cd ${rootfs}
+print_info "Change working directory to ${rootfs} ..."
+cd "${rootfs}"
 
 if $DEBUG; then
-    echo "Dropping into shell"
+    print_info "Dropping into shell"
     LANG=C chroot ${rootfs} /bin/bash
 fi
 
 # Kill remaining qemu-arm-static processes
+print_info "Killing remaining qemu-arm-static processes..."
 pkill -9 -f ".*qemu-arm-static.*"
 
 
 # Synchronize file systems
+print_info "sync filesystems, sleep 15 seconds"
 sync
 sleep 15
 
-# Make sure we're not in the mounted filesystem anymore, or unmount -l would silently keep waiting!
-cd
+cleanup -clean
 
-# Unmount
-umount -l ${bootp} &>> $LOG
-umount -l ${rootfs}/usr/src/delivery &>> $LOG
-umount -l ${rootfs}/dev/pts &>> $LOG
-umount -l ${rootfs}/dev &>> $LOG
-umount -l ${rootfs}/sys &>> $LOG
-umount -l ${rootfs}/proc &>> $LOG
-umount -l ${rootfs} &>> $LOG
-umount -l ${rootp} &>> $LOG
-
-# Remove build directory
-rm -rf $BUILD_ENV
-
-echo "Finishing ${image}"
-
-# Remove partition mappings
-sleep 30
-kpartx -vd ${lodevice} &>> $LOG
-losetup -d ${lodevice} &>> $LOG
-
-echo "Created image ${image}"
+print_info "Successfully created image ${IMG}"
+exit 0

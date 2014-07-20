@@ -1,0 +1,39 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: resizepart_once
+# Required-Start:
+# Required-Stop:
+# Default-Start: 2 3 4 5 S
+# Default-Stop:
+# Short-Description: Resize the root partition to fill SD card
+# Description:
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        # Return value will likely be error for fdisk as it fails to reload the
+        # partition table because the root fs is mounted
+        fdisk /dev/mmcblk0 <<EOF
+p
+d
+2
+n
+p
+2
+
+
+p
+w
+EOF
+        update-rc.d resize2fs_once defaults &&
+        rm /etc/init.d/resizepart_once &&
+        update-rc.d resizepart_once remove &&
+        shutdown -r now
+        ;;
+    *)
+        echo "Usage: $0 start" >&2
+        exit 3
+        ;;
+esac

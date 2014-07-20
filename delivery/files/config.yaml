@@ -1,25 +1,17 @@
-# Valid values: 'none', 'debug', 'info', 'warning', 'error', 'critical'
-loglevel: debug
-plugins: [web,hidtrigger]
-
-# Options for 'capture' step
-capture:
+driver: chdkcamera
+plugins:
+    - hidtrigger
+    - web
+core:
+    verbose: yes
+    logfile: /home/spreads/.config/spreads/spreads.log
     capture_keys: [' ', b]
+    loglevel: debug
 device:
-    focus_distance: 545
-    dpi: 300
-    parallel_capture: yes
-    chdkptp_path: /usr/local/lib/chdkptp
-    zoom_level: 3
-    shoot_raw: no
-    sensitivity: 80
     flip_target_pages: no
-    shutter_speed: 1/25
+    parallel_capture: yes
 web:
-    database: ~/.config/spreads/workflows.db
+    project_dir: /home/spreads/scans
+    debug: yes
+    standalone_device: yes
     mode: scanner
-    project_dir: ~/scans
-    postprocessing_server: ''
-    debug: no
-driver: a2200
-logfile: ~/.config/spreads/spreads.log
