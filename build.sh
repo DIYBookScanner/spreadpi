@@ -80,17 +80,6 @@ if [ -z "$DEBUG" ]; then
     DEBUG=false
 fi
 
-# Try to get version string from Git
-VERSION="$(git tag -l --contains HEAD)"
-if [ -z "$RELEASE" ]; then
-    # We append the date, since otherwise our loopback devices will
-    # be broken on multiple runs if we use the same image name each time.
-    VERSION="git@$(git log --pretty=format:'%h' -n 1)_$(date +%s)"
-fi
-# Make sure we have a version string, if not use the current date
-if [ -z "$VERSION" ]; then
-    VERSION="$(date +%s)"
-fi
 
 # =================== #
 #    CONFIGURATION    #
@@ -142,8 +131,8 @@ print_info "Temporary directory created at $BUILD_ENV"
 
 BASE_DIR="$(dirname $0)"
 SCRIPT_DIR="$(readlink -m $BASE_DIR)"
-LOG="${SCRIPT_DIR}/buildlog_${VERSION}.txt"
-IMG="${SCRIPT_DIR}/spreadpi_${VERSION}.img"
+LOG="${SCRIPT_DIR}/buildlog.txt"
+IMG="${SCRIPT_DIR}/spreadpi.img"
 DELIVERY_DIR="$SCRIPT_DIR/delivery"
 rootfs="${BUILD_ENV}/rootfs"
 bootfs="${rootfs}/boot"
