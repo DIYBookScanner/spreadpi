@@ -382,4 +382,5 @@ sleep 15
 cleanup -clean
 
 print_info "Successfully created image ${IMG}"
+trap - EXIT
 exit 0
