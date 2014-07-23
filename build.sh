@@ -250,10 +250,10 @@ mkdir -p ${rootfs}/usr/src/delivery
 
 # Mount pseudo file systems
 print_info "Mounting pseudo filesystems in $rootfs ..."
-mount -t proc none ${rootfs}/proc
-mount -t sysfs none ${rootfs}/sys
-mount -o bind /dev ${rootfs}/dev
-mount -o bind /dev/pts ${rootfs}/dev/pts
+mount -t proc proc ${rootfs}/proc
+mount -t sysfs sys ${rootfs}/sys
+mount --bind /dev ${rootfs}/dev
+mount --bind /dev/pts ${rootfs}/dev/pts
 
 # Mount our delivery path
 print_info "Mounting $DELIVERY_DIR in $rootfs ..."
@@ -362,9 +362,10 @@ if $DEBUG; then
 fi
 
 # Kill remaining qemu-arm-static processes
-print_info "Killing remaining qemu-arm-static processes..."
-pkill -9 -f ".*qemu-arm-static.*"
-
+if [ -n $(pgrep "qemu-arm-static") ]; then
+    print_info "Killing remaining qemu-arm-static processes..."
+    kill -9 $(pgrep "qemu-arm-static")
+fi
 
 # Synchronize file systems
 print_info "sync filesystems, sleep 15 seconds"
