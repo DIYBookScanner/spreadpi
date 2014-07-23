@@ -8,7 +8,7 @@ function print_info()
     green='\e[0;32m'
     endColor='\e[0m'
     echo -e "${green}=> $1${endColor}"
-    if [[ -n $LOG && -f $LOG ]]; then
+    if [[ -n "$LOG" && -f "$LOG" ]]; then
         echo "=> $1" >> "$LOG"
     fi
 }
@@ -18,7 +18,7 @@ function print_error()
     red='\e[0;31m'
     endColor='\e[0m'
     echo -e "${red}!!> $1${endColor}"
-    if [[ -n $LOG && -f $LOG ]]; then
+    if [[ -n "$LOG" && -f "$LOG" ]]; then
         echo "!!> $1" >> "$LOG"
     fi
 }
@@ -363,7 +363,7 @@ if $DEBUG; then
 fi
 
 # Kill remaining qemu-arm-static processes
-if [ -n $(pgrep "qemu-arm-static") ]; then
+if [ -n "$(pgrep qemu-arm-static)" ]; then
     print_info "Killing remaining qemu-arm-static processes..."
     kill -9 $(pgrep "qemu-arm-static")
 fi
