@@ -10,7 +10,10 @@ touch /boot/start.elf
 
 # Temporarily fake uname output to fix rpi-update
 mv /bin/uname /bin/uname.bak
-echo "#!/bin/sh\necho \"3.1.9+\"" > /bin/uname
+echo '
+#\!/bin/sh
+echo "3.1.9+"
+' > /bin/uname
 chmod +x /bin/uname
 
 # Update kernel and firmware
