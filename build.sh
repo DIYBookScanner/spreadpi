@@ -144,7 +144,7 @@ if [ -e $IMG ]; then
     exit 1
 fi
 
-if [ -n $FROM_TARBALL ]; then
+if [ -n "$FROM_TARBALL" ]; then
     cp $FROM_TARBALL $DELIVERY_DIR/spreads-sdist.tar.gz
     print_info "Installing from tarball $FROM_TARBALL"
 fi
