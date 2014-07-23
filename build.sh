@@ -139,10 +139,16 @@ bootfs="${rootfs}/boot"
 QEMU_ARM_STATIC="/usr/bin/qemu-arm-static"
 CHROOT_READY=false
 
+if [ -e $IMG ]; then
+    print_error "spreadpi.img already exists, please remove it before running the script."
+    exit 1
+fi
+
 # Exported to subshells
 export DELIVERY_DIR
 
 print_info "Creating log file $LOG"
+rm -f $LOG
 touch "$LOG"
 
 if $USE_LOCAL_MIRROR; then
