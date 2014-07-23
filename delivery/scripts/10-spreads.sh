@@ -2,7 +2,18 @@
 set -e
 
 # Install spreads dependencies
-apt-get -y --force-yes install spreads spreads-web chdkptp
+if [ -e $DELIVERY_DIR/spreads-sdist.tar.gz ]; then
+    apt-get -y --force-yes install chdkptp python python-colorama python-yaml\
+                                   python-concurrent.futures python-blinker\
+                                   python-roman python-usb python-psutil\
+                                   python-jpegtran python-hidapi-cffi\
+                                   python-isbnlib python-flask\
+                                   python-requests python-tornado\
+                                   python-wand python-zipstream python-pip
+    pip install $DELIVERY_DIR/spreads-sdist.tar.gz
+else
+    apt-get -y --force-yes install spreads spreads-web chdkptp
+fi
 
 # Create spreads configuration directoy
 mkdir -p /home/spreads/.config/spreads
