@@ -155,6 +155,7 @@ export DELIVERY_DIR
 print_info "Creating log file $LOG"
 rm -f $LOG
 touch "$LOG"
+chmod a+r "$LOG"
 
 if $USE_LOCAL_MIRROR; then
     DEB_MIRROR=$LOCAL_DEB_MIRROR
