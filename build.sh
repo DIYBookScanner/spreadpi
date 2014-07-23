@@ -27,6 +27,7 @@ function cleanup()
 {
     set +e
 
+    EXIT_AFTER=false
     if [ ! -z "$1" ] && [ "$1" == "-clean" ]; then
         print_info "Cleaning up"
     else
@@ -34,6 +35,7 @@ function cleanup()
         if $DEBUG && $CHROOT_READY; then
             LANG=C chroot ${rootfs} /bin/bash
         fi
+        EXIT_AFTER=true
         print_info "Cleaning up"
     fi
     # Make sure we're not in the mounted filesystem anymore, or unmount -l would silently keep waiting!
@@ -65,6 +67,10 @@ function cleanup()
         print_info "remove $lodevice ..."
         kpartx -vd ${lodevice} &>> $LOG
         losetup -d ${lodevice} &>> $LOG
+    fi
+
+    if [ $EXIT_AFTER = true ]; then
+        exit 1
     fi
 }
 
