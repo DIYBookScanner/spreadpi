@@ -13,6 +13,6 @@ device:
     chdkptp_path: /usr/lib/chdkptp
 web:
     project_dir: /home/spreads/scans
-    debug: yes
+    debug: no
     standalone_device: yes
     mode: scanner
