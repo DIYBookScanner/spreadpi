@@ -16,3 +16,4 @@ web:
     debug: no
     standalone_device: yes
     mode: scanner
+    port: 80
