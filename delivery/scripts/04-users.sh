@@ -15,6 +15,9 @@ mkdir -p /home/spreads/.ssh
 # Needed for mounting usb disks
 adduser spreads plugdev
 
+# Allow user to 'sudo' any command
+adduser spreads sudo
+
 if [ -e "$SSH_KEY" ]; then
     cp "$SSH_KEY" /home/spreads/.ssh/authorized_keys
 fi
