@@ -24,3 +24,7 @@ chmod a+x /etc/init.d/spread
 
 # Add spreads init script to default boot sequence
 update-rc.d spread defaults
+
+# Add iptables rule to forward traffic from port 80 to spreads running on
+# port 5000
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 5000
