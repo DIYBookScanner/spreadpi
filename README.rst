@@ -20,8 +20,8 @@ Download
 
 For older versions, head over to the `Buildbot directory <http://buildbot.diybookscanner.org/nightly/>`_.
 
-Requirements
-============
+Build Requirements
+==================
 * `git`
 * `binfmt_misc` kernel module loaded
 * `qemu-arm-static`
@@ -35,8 +35,8 @@ On Debian and derivatives::
 
     wget http://archive.raspbian.org/raspbian.public.key -O - | sudo apt-key add -
 
-Usage
-=====
+Building
+========
 To generate an image, run the `build.sh` script as root:
 
 ::
