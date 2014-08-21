@@ -7,7 +7,8 @@ if [ -e $DELIVERY_DIR/spreads-sdist.tar.gz ]; then
         chdkptp python python-colorama python-yaml python-concurrent.futures \
         python-blinker python-roman python-usb python-psutil \
         python-jpegtran python-hidapi-cffi python-isbnlib python-flask \
-        python-requests python-tornado python-wand python-zipstream python-pip
+        python-requests python-tornado python-wand python-zipstream \
+	python-pip python-netifaces
     pip install $DELIVERY_DIR/spreads-sdist.tar.gz
 else
     apt-get -y --force-yes install spreads spreads-web chdkptp
