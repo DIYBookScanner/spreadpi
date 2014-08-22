@@ -1,12 +1,4 @@
-::
-
-                                  _       _
-     ___ _ __  _ __ ___  __ _  __| |_ __ (_)
-    / __| '_ \| '__/ _ \/ _` |/ _` | '_ \| |
-    \__ \ |_) | | |  __/ (_| | (_| | |_) | |
-    |___/ .__/|_|  \___|\__,_|\__,_| .__/|_|
-        |_|                        |_|
-
+.. image:: https://raw.githubusercontent.com/DIYBookScanner/spreadpi/gh-pages/logo_small.jpg
 
 Raspberry Pi image tailored for running a DIYBookScanner with the spreads
 software suite.
