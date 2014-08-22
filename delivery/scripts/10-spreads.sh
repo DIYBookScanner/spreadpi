@@ -8,7 +8,7 @@ if [ -e $DELIVERY_DIR/spreads-sdist.tar.gz ]; then
         python-blinker python-roman python-usb python-psutil \
         python-jpegtran python-hidapi-cffi python-isbnlib python-flask \
         python-requests python-wand python-zipstream python-netifaces
-    apt-get install python-pip
+    apt-get -y install python-pip
     pip install tornado
     pip install $DELIVERY_DIR/spreads-sdist.tar.gz
 else
