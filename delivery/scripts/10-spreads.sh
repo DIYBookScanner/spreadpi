@@ -7,7 +7,8 @@ if [ -e $DELIVERY_DIR/spreads-sdist.tar.gz ]; then
         chdkptp python python-colorama python-yaml python-concurrent.futures \
         python-blinker python-roman python-usb python-psutil \
         python-jpegtran python-hidapi-cffi python-isbnlib python-flask \
-        python-requests python-wand python-zipstream python-netifaces
+        python-requests python-wand python-zipstream python-netifaces \
+        python-dbus
     apt-get -y install python-pip
     pip install tornado
     pip install $DELIVERY_DIR/spreads-sdist.tar.gz
