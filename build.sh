@@ -287,7 +287,7 @@ mount ${bootp} ${bootfs} &>> $LOG
 # Configure Debian release and mirror
 print_info "Configure apt in $rootfs..."
 echo "deb ${DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
-deb http://spreads.jbaiter.de/raspbian wheezy main
+deb http://apt.diybookscanner.org/raspbian wheezy main
 " > "${rootfs}/etc/apt/sources.list"
 
 # Configure Raspberry Pi boot options
@@ -346,7 +346,7 @@ done
 # Configure default mirror
 print_info "Writing $rootfs/apt/sources.list again, using non-local mirror..."
 echo "deb ${DEFAULT_DEB_MIRROR} ${DEB_RELEASE} main contrib non-free
-deb http://spreads.jbaiter.de/raspbian wheezy main
+deb http://apt.diybookscanner.org/raspbian wheezy main
 " > "$rootfs/etc/apt/sources.list"
 
 # Clean up
