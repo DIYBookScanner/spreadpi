@@ -21,6 +21,7 @@ Build Requirements
 * `kpartx`
 * `mkfs.vfat`
 * `mkfs.ext4`
+* `lvm2`
 * raspbain archive key installed
 
 On Debian and derivatives::
