@@ -179,7 +179,7 @@ print_info "Create image mount point $rootfs"
 mkdir -p "${rootfs}"
 
 # Install dependencies
-for dep in binfmt-support qemu qemu-user-static debootstrap kpartx lvm2 dosfstools; do
+for dep in binfmt-support qemu qemu-user-static debootstrap kpartx dmsetup dosfstools; do
   problem=$(dpkg -s $dep|grep installed)
   if [ "" == "$problem" ]; then
     print_info "No $dep. Setting up $dep"
