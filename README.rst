@@ -52,6 +52,8 @@ There are some environment variables that you can set to customize the build:
     Public key to enable SSH Login for (default: `~/.ssh/id_rsa.pub`)
 `DEBUG`
     Drop into a chroot shell after the image has finished building (default: `false`)
+`FROM_TARBALL`
+    Path to a spreads tarball created by ``python setup.py sdist``. If unset, install from Raspbian.
 
 The image will generate a rasbpian image with up-to-date packages and spreads
 pre-installed and pre-configured (for use with Canon A2200 cameras running CHDK).
