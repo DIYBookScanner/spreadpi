@@ -22,7 +22,7 @@ Build Requirements
 * `mkfs.vfat`
 * `mkfs.ext4`
 * `dmsetup`
-* raspbain archive key installed
+* raspbian archive key installed
 
 On Debian and derivatives::
 
@@ -53,7 +53,7 @@ There are some environment variables that you can set to customize the build:
 `DEBUG`
     Drop into a chroot shell after the image has finished building (default: `false`)
 `FROM_TARBALL`
-    Path to a spreads tarball created by ``python setup.py sdist``. If unset, install from Raspbian.
+    Path to a spreads tarball created by ``python setup.py sdist``. If unset, install from Raspbian packages.
 
 The image will generate a rasbpian image with up-to-date packages and spreads
 pre-installed and pre-configured (for use with Canon A2200 cameras running CHDK).
