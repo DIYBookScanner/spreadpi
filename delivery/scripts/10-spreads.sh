@@ -8,9 +8,10 @@ if [ -e $DELIVERY_DIR/spreads-sdist.tar.gz ]; then
         python-blinker python-roman python-usb python-psutil \
         python-jpegtran python-hidapi-cffi python-isbnlib python-flask \
         python-requests python-wand python-zipstream python-netifaces \
-        python-dbus
+        python-dbus liblua5.2-dev libusb-dev
     apt-get -y install python-pip
     pip install tornado
+    pip install lupa --install-opts="--no-luajit"
     pip install $DELIVERY_DIR/spreads-sdist.tar.gz
 else
     apt-get -y --force-yes install spreads spreads-web chdkptp
