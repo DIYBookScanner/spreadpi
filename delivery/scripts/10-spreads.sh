@@ -12,6 +12,7 @@ if [ -e $DELIVERY_DIR/spreads-sdist.tar.gz ]; then
     apt-get -y install python-pip build-essential python2.7-dev pkg-config
     pip install tornado
     pip install lupa --install-option="--no-luajit"
+    pip install chdkptp.py
     pip install $DELIVERY_DIR/spreads-sdist.tar.gz
     apt-get -y remove --purge --auto-remove build-essential
 else
