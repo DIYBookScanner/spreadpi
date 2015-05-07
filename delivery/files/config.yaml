@@ -10,7 +10,6 @@ core:
 device:
     flip_target_pages: no
     parallel_capture: yes
-    chdkptp_path: /usr/lib/chdkptp
 web:
     project_dir: /home/spreads/scans
     debug: no

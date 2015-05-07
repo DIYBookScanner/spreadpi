@@ -302,13 +302,9 @@ echo "
 proc            /proc             proc    defaults                   0       0
 /dev/mmcblk0p1  /boot             vfat    defaults                   0       2
 /dev/mmcblk0p2  /                 ext4    defaults,noatime           0       1
-tmpfs           /tmp              tmpfs   defaults,noatime,mode=1777 0       0
-tmpfs           /var/log          tmpfs   defaults,noatime,mode=0755 0       0
 tmpfs           /tmp              tmpfs   defaults,noatime,nosuid,size=100m    0 0
 tmpfs           /var/tmp          tmpfs   defaults,noatime,nosuid,size=30m    0 0
-tmpfs           /var/lock         tmpfs   defaults,noatime,mode=0755 0       0
 tmpfs           /var/log          tmpfs   defaults,noatime,nosuid,mode=0755,size=100m    0 0
-tmpfs           /var/run          tmpfs   defaults,noatime,nosuid,mode=0755,size=2m    0 0
 " > "$rootfs/etc/fstab"
 
 # Configure Hostname

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-cp /usr/src/delivery/files/resizepart_once /etc/init.d/resizepart_once
-cp /usr/src/delivery/files/resize2fs_once /etc/init.d/resize2fs_once
-chmod +x /etc/init.d/resizepart_once
-chmod +x /etc/init.d/resize2fs_once
-update-rc.d resizepart_once defaults
+cp $DELIVERY_DIR/files/resize_sd /usr/bin/resize_sd
+chmod +x /usr/bin/resize_sd
+
+cp $DELIVERY_DIR/files/resize_sd.service /etc/systemd/system/
+systemctl enable resize_sd

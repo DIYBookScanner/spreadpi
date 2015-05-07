@@ -1,0 +1,10 @@
+[Unit]
+Description=Resize SD-Card on first boot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/resize_sd
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

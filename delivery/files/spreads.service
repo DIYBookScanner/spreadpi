@@ -1,0 +1,11 @@
+[Unit]
+Description=Spreads web service
+After=network-online.target
+
+[Service]
+Type=simple
+User=spreads
+ExecStart=/usr/local/bin/spread web
+
+[Install]
+WantedBy=multi-user.target

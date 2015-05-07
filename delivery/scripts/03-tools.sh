@@ -2,7 +2,9 @@
 set -e
 
 # Install some basic tools and libraries
-apt-get -y install --no-install-recommends cifs-utils console-common htop less ntp openssh-server sudo vim
+apt-get -y install --no-install-recommends \
+    cifs-utils console-common htop less ntp openssh-server sudo vim \
+    systemd-sysv
 
 # User spreads should be able to shut the system down (used in web interface)
 echo 'spreads ALL=NOPASSWD: /sbin/shutdown' >> /etc/sudoers
