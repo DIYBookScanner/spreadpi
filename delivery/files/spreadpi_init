@@ -1,0 +1,46 @@
+#!/bin/sh
+
+STATE_DIR=/var/lib/spreadpi
+mkdir -p $STATE_DIR
+
+if [ ! -f $STATE_DIR/overclock_set ]; then
+    # We only want to overclock the older models
+    if grep -Eq 'Revision\s*:\s*\w{4}[^4]\w' /proc/cpuinfo; then
+        cat <<EOM >/boot/config.txt
+core_freq=500
+sdram_freq=600
+over_voltage=6
+arm_freq=1000
+EOM
+
+        cat <<EOM >/etc/rc.local
+#!/bin/sh
+echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+exit 0
+EOM
+    fi
+    touch $STATE_DIR/overclock_set
+fi
+
+if [ ! -f $STATE_DIR/part_resized ]; then
+    # Return value will likely be error for fdisk as it fails to reload the
+    # partition table because the root fs is mounted
+    fdisk /dev/mmcblk0 <<EOF
+p
+d
+2
+n
+p
+2
+
+
+p
+w
+EOF
+
+    touch $STATE_DIR/part_resized
+    systemctl reboot
+elif [ ! -f $STATE_DIR/fs_resized ]; then
+    resize2fs /dev/mmcblk0p2
+    touch $STATE_DIR/fs_resized
+fi

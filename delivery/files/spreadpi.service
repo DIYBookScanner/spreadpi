@@ -1,0 +1,10 @@
+[Unit]
+Description=Perform SpreadPi initialization on first boot.
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/spreadpi_init
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
